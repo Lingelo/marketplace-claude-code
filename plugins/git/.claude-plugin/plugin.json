@@ -1,0 +1,9 @@
+{
+  "name": "git",
+  "description": "Git utilities with conventional commits and safe push (blocks push to main/master)",
+  "version": "1.0.0",
+  "author": {
+    "name": "Angelo LIMA",
+    "email": "contact@example.com"
+  }
+}

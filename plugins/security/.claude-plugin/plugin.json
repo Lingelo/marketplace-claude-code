@@ -1,0 +1,9 @@
+{
+  "name": "security",
+  "description": "Blocks access to sensitive files (.env, secrets, credentials, keys)",
+  "version": "1.1.0",
+  "author": {
+    "name": "Angelo LIMA",
+    "email": "contact@example.com"
+  }
+}

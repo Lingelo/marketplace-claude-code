@@ -1,0 +1,9 @@
+{
+  "name": "figma",
+  "description": "Serveur MCP Figma pour interagir avec les designs",
+  "version": "1.0.0",
+  "author": {
+    "name": "Your Team",
+    "email": "contact@example.com"
+  }
+}

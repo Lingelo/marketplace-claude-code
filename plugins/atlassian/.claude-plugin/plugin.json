@@ -1,0 +1,9 @@
+{
+  "name": "atlassian",
+  "description": "Serveur MCP Atlassian pour Jira et Confluence",
+  "version": "1.0.0",
+  "author": {
+    "name": "Your Team",
+    "email": "contact@example.com"
+  }
+}

@@ -1,0 +1,9 @@
+{
+  "name": "experts",
+  "description": "Collection d'agents experts spécialisés (architecte, etc.)",
+  "version": "1.0.0",
+  "author": {
+    "name": "Angelo LIMA",
+    "email": "contact@example.com"
+  }
+}

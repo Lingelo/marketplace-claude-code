@@ -1,0 +1,17 @@
+{
+  "description": "Blocks access to sensitive files (.env, secrets, credentials, keys)",
+  "hooks": {
+    "PreToolUse": [
+      {
+        "matcher": "Read|Edit|Write|Bash",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "node ${CLAUDE_PLUGIN_ROOT}/scripts/block-sensitive-files.js",
+            "timeout": 5000
+          }
+        ]
+      }
+    ]
+  }
+}

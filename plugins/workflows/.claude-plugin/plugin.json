@@ -1,0 +1,9 @@
+{
+  "name": "workflows",
+  "description": "Claude code development workflows (EPCT methodology)",
+  "version": "1.1.0",
+  "author": {
+    "name": "Angelo LIMA",
+    "email": "contact@example.com"
+  }
+}

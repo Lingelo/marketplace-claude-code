@@ -1,0 +1,9 @@
+{
+  "name": "notifications",
+  "description": "Sound notifications when Claude completes tasks or needs attention",
+  "version": "2.0.0",
+  "author": {
+    "name": "Angelo LIMA",
+    "email": "contact@example.com"
+  }
+}

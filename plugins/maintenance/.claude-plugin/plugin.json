@@ -1,0 +1,9 @@
+{
+  "name": "maintenance",
+  "description": "Outils de maintenance pour Claude Code (nettoyage plugins, diagnostic)",
+  "version": "1.0.0",
+  "author": {
+    "name": "Angelo LIMA",
+    "email": "contact@example.com"
+  }
+}

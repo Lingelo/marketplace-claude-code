@@ -1,0 +1,9 @@
+{
+  "name": "release-note",
+  "description": "Generate release notes from Jira tickets via MCP Atlassian",
+  "version": "1.0.0",
+  "author": {
+    "name": "Angelo LIMA",
+    "email": "contact@example.com"
+  }
+}

@@ -1,0 +1,29 @@
+{
+  "description": "Sound notifications when Claude completes tasks or needs attention",
+  "hooks": {
+    "Stop": [
+      {
+        "matcher": "",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "CLAUDE_HOOK_EVENT=Stop node ${CLAUDE_PLUGIN_ROOT}/scripts/notify.js",
+            "timeout": 5000
+          }
+        ]
+      }
+    ],
+    "Notification": [
+      {
+        "matcher": "permission_prompt",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "CLAUDE_HOOK_EVENT=Notification node ${CLAUDE_PLUGIN_ROOT}/scripts/notify.js",
+            "timeout": 5000
+          }
+        ]
+      }
+    ]
+  }
+}

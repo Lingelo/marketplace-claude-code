@@ -1,0 +1,9 @@
+{
+  "name": "statusline",
+  "description": "Setup wizard for hell0github/claude-statusline - context tracking, cost monitoring, timer, burn rate, and multi-layer progress bars",
+  "version": "2.0.0",
+  "author": {
+    "name": "Angelo LIMA",
+    "email": "contact@example.com"
+  }
+}
