@@ -1,5 +1,5 @@
 {
-  "description": "Sound notifications when Claude completes tasks or needs attention",
+  "description": "Gaming sound notifications via PeonPing (Warcraft, StarCraft, Portal...)",
   "hooks": {
     "Stop": [
       {
@@ -7,7 +7,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "CLAUDE_HOOK_EVENT=Stop node ${CLAUDE_PLUGIN_ROOT}/scripts/notify.js",
+            "command": "CESP_EVENT=task.complete ${CLAUDE_PLUGIN_ROOT}/scripts/play.sh",
             "timeout": 5000
           }
         ]
@@ -19,7 +19,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "CLAUDE_HOOK_EVENT=Notification node ${CLAUDE_PLUGIN_ROOT}/scripts/notify.js",
+            "command": "CESP_EVENT=input.required ${CLAUDE_PLUGIN_ROOT}/scripts/play.sh",
             "timeout": 5000
           }
         ]
