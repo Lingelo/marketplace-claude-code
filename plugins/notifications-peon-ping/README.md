@@ -1,68 +1,134 @@
 # Plugin Notifications PeonPing
 
-Notifications sonores gaming (Warcraft, StarCraft, Portal, Zelda...) via [PeonPing](https://github.com/PeonPing/peon-ping).
+Notifications sonores et visuelles gaming (Warcraft, StarCraft, Portal, Zelda...) via [PeonPing](https://github.com/PeonPing/peon-ping).
 
-> **Incompatibilité** : Ce plugin est mutuellement exclusif avec `notifications-system`. N'installez qu'un seul des deux pour éviter les doubles notifications.
+PeonPing gère ses propres hooks Claude Code nativement. Ce plugin sert de **point d'entrée marketplace** pour découvrir et installer PeonPing.
 
-## Installation
+> **Incompatibilité** : Ce plugin est mutuellement exclusif avec `notifications-system` sur les événements `Stop` et `Notification`. N'installez qu'un seul des deux pour éviter les doubles notifications.
 
-```bash
-/plugin install notifications-peon-ping@angelo-plugins
-```
+## Installation rapide
 
-Puis lancer le wizard de configuration :
+Le skill `/peon-ping-setup` automatise l'installation :
 
 ```
 /peon-ping-setup
 ```
 
-Le wizard installe PeonPing CLI, choisit un pack de sons, configure le volume et teste le tout.
+Il installe PeonPing CLI (si absent), lance le setup natif et affiche les commandes de personnalisation.
 
-## Prérequis
+## Installation manuelle
 
-- [PeonPing CLI](https://github.com/PeonPing/peon-ping) installé et dans le PATH
-- Le skill `/peon-ping-setup` peut l'installer automatiquement
+### 1. Installer PeonPing CLI
 
-## Fonctionnalités
+**macOS (Homebrew) :**
+```bash
+brew tap PeonPing/tap
+brew install peon-ping
+```
 
-| Événement | Event PeonPing | Quand |
-|-----------|---------------|-------|
+**Linux :**
+```bash
+curl -fsSL https://raw.githubusercontent.com/PeonPing/peon-ping/main/install.sh | bash
+```
+
+### 2. Lancer le setup natif
+
+```bash
+peon-ping-setup
+```
+
+> **Important** : Cette commande n'est **pas interactive**. Elle s'exécute d'un coup et :
+> - Auto-détecte Claude Code
+> - Enregistre les hooks dans `~/.claude/settings.json`
+> - Installe 5 packs de sons par défaut
+> - Configure les skills natifs PeonPing (`/peon-ping-toggle`, `/peon-ping-config`, `/peon-ping-use`, `/peon-ping-log`)
+
+**Options :**
+```bash
+peon-ping-setup --packs=peon,glados    # Installer des packs spécifiques
+peon-ping-setup --all                   # Installer tous les packs (+170)
+```
+
+### 3. Personnaliser (après le setup)
+
+Le setup installe les défauts. La personnalisation se fait ensuite avec les commandes `peon` :
+
+**Choisir un pack de sons :**
+```bash
+peon packs list                        # Voir les packs installés
+peon packs list --registry             # Voir tous les packs disponibles (+170)
+peon packs install kaamelott           # Installer un nouveau pack
+peon packs use kaamelott               # Activer un pack
+```
+
+**Régler le volume :**
+```bash
+peon volume                            # Voir le volume actuel
+peon volume 0.8                        # Régler (0.0 à 1.0)
+```
+
+**Notifications desktop (overlay visuel) :**
+```bash
+peon notifications overlay             # Grandes bannières (défaut)
+peon notifications standard            # Notifications système classiques
+peon notifications off                 # Son uniquement, pas de visuel
+```
+
+**Tester :**
+```bash
+peon preview task.complete             # Son de fin de tâche
+peon preview input.required            # Son de demande d'attention
+```
+
+## Comment ça marche
+
+PeonPing enregistre un seul script (`peon.sh`) comme hook pour tous les événements Claude Code. Il détecte automatiquement le type d'événement et joue le son correspondant :
+
+| Événement Claude Code | Catégorie PeonPing | Quand |
+|----------------------|-------------------|-------|
 | **Stop** | `task.complete` | Claude termine une réponse |
-| **Notification** | `input.required` | Claude demande une interaction (permission outil, question) |
+| **Notification** | `input.required` | Claude demande une interaction |
+| **SessionStart** | `session.start` | Démarrage d'une session |
+| **PermissionRequest** | `input.required` | Demande de permission |
+| **PostToolUseFailure** | `task.error` | Un outil échoue |
 
-## Packs de sons disponibles
+## Packs de sons populaires
 
 | Pack | Univers | Exemples |
 |------|---------|----------|
 | **peon** | Warcraft | "Work complete!", "More work?" |
 | **glados** | Portal | Citations de GLaDOS |
-| **kerrigan** | StarCraft | Citations de Kerrigan |
-| **navi** | Zelda | "Hey! Listen!" |
+| **kaamelott** | Kaamelott | Citations de la série |
+| **sc_kerrigan** | StarCraft | Citations de Kerrigan |
+| **jarvis** | Iron Man | J.A.R.V.I.S. |
+| **r2d2** | Star Wars | R2-D2 |
 
-Voir la [liste complète](https://github.com/PeonPing/peon-ping#packs) dans la documentation PeonPing.
++170 autres. Voir `peon packs list --registry`.
 
-## Configuration manuelle
+## Commandes utiles
 
-Si vous préférez ne pas utiliser le wizard :
+### Skills Claude Code (fournis par PeonPing)
 
-```bash
-# Installer PeonPing (macOS)
-brew tap PeonPing/tap
-brew install peon-ping
+| Skill | Description |
+|-------|-------------|
+| `/peon-ping-toggle` | Activer/désactiver les sons |
+| `/peon-ping-config` | Modifier la configuration |
+| `/peon-ping-use` | Changer de pack |
+| `/peon-ping-log` | Voir les logs |
 
-# Choisir un pack
-peon config set pack peon
+### Commandes terminal
 
-# Régler le volume
-peon config set volume 80
-
-# Tester
-peon preview task.complete
-```
-
-## Graceful Degradation
-
-Si PeonPing n'est pas installé, le plugin ne fait rien (exit 0 silencieux). Aucune erreur ne sera affichée.
+| Commande | Description |
+|----------|-------------|
+| `peon status` | Vérifier le statut complet |
+| `peon volume [0.0-1.0]` | Voir/changer le volume |
+| `peon packs list` | Lister les packs installés |
+| `peon packs list --registry` | Lister tous les packs disponibles |
+| `peon packs install <pack>` | Installer un pack |
+| `peon packs use <pack>` | Activer un pack |
+| `peon preview <category>` | Tester un son |
+| `peon toggle` | Mute/unmute |
+| `peon notifications on/off` | Activer/désactiver le visuel |
 
 ## Structure
 
@@ -70,13 +136,9 @@ Si PeonPing n'est pas installé, le plugin ne fait rien (exit 0 silencieux). Auc
 notifications-peon-ping/
 ├── .claude-plugin/
 │   └── plugin.json
-├── hooks/
-│   └── hooks.json          # Hooks Stop + Notification → play.sh
-├── scripts/
-│   └── play.sh             # Wrapper qui appelle peon emit <event>
 ├── skills/
 │   └── setup/
-│       └── SKILL.md        # Wizard d'installation (/peon-ping-setup)
+│       └── SKILL.md        # /peon-ping-setup (install + setup natif)
 └── README.md
 ```
 
@@ -84,11 +146,19 @@ notifications-peon-ping/
 
 ### Pas de son
 
-1. Vérifier que PeonPing est installé : `which peon`
-2. Tester manuellement : `peon preview task.complete`
-3. Vérifier le volume : `peon config get volume`
-4. Vérifier le pack actif : `peon config get pack`
+1. Vérifier l'installation : `which peon`
+2. Vérifier le statut : `peon status`
+3. Tester manuellement : `peon preview task.complete`
+4. Vérifier le volume : `peon volume`
+5. Vérifier les hooks Claude Code : `cat ~/.claude/settings.json | grep peon`
+
+### Hooks manquants
+
+Relancer le setup natif :
+```bash
+peon-ping-setup
+```
 
 ### PeonPing non trouvé
 
-Relancer `/peon-ping-setup` ou installer manuellement depuis https://github.com/PeonPing/peon-ping.
+Installer depuis https://github.com/PeonPing/peon-ping.
