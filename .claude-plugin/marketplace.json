@@ -13,9 +13,15 @@
             "category": "security"
         },
         {
-            "name": "notifications",
-            "source": "./plugins/notifications",
-            "description": "Sound notifications when Claude completes tasks or needs attention",
+            "name": "notifications-system",
+            "source": "./plugins/notifications-system",
+            "description": "System sound & OS notifications when Claude completes tasks or needs attention",
+            "category": "productivity"
+        },
+        {
+            "name": "notifications-peon-ping",
+            "source": "./plugins/notifications-peon-ping",
+            "description": "Gaming sound notifications (Warcraft, StarCraft, Portal...) via PeonPing",
             "category": "productivity"
         },
         {

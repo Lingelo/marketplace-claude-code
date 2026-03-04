@@ -1,11 +1,18 @@
-# Plugin Notifications
+# Plugin Notifications System
 
-Notifications sonores et visuelles quand Claude termine une tâche ou a besoin d'attention.
+Notifications sonores système et visuelles (OS) quand Claude termine une tâche ou a besoin d'attention.
+
+> **Incompatibilité** : Ce plugin est mutuellement exclusif avec `notifications-peon-ping`. N'installez qu'un seul des deux pour éviter les doubles notifications.
+
+> **Migration** : Ce plugin s'appelait auparavant `notifications`. Si vous aviez `notifications@angelo-plugins` installé, désinstallez-le et réinstallez sous le nouveau nom :
+> ```bash
+> /plugin install notifications-system@angelo-plugins
+> ```
 
 ## Installation
 
 ```bash
-/plugin install notifications@angelo-plugins
+/plugin install notifications-system@angelo-plugins
 ```
 
 ## Configuration
@@ -95,7 +102,7 @@ Plus besoin de surveiller constamment le terminal !
 ## Structure
 
 ```
-notifications/
+notifications-system/
 ├── .claude-plugin/
 │   └── plugin.json
 ├── hooks/
