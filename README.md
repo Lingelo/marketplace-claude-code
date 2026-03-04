@@ -7,7 +7,8 @@ Marketplace de plugins pour Claude Code, fournissant des outils et workflows de 
 | Plugin | Description | Composants |
 |--------|-------------|------------|
 | [**security**](plugins/security/README.md) | Bloque l'accès aux fichiers sensibles (.env, secrets, clés) | Hook |
-| [**notifications**](plugins/notifications/README.md) | Sons et notifications visuelles | Hook |
+| [**notifications-system**](plugins/notifications-system/README.md) | Sons système et notifications OS | Hook |
+| [**notifications-peon-ping**](plugins/notifications-peon-ping/README.md) | Sons gaming (Warcraft, StarCraft, Portal...) via PeonPing | Hook, Skill |
 | [**git**](plugins/git/README.md) | Commits conventionnels + push securisé (bloque main/master) | Skills |
 | [**workflows**](plugins/workflows/README.md) | Workflow de développement Explore-Plan-Code-Test | Command, Agent |
 | [**playwright**](plugins/playwright/README.md) | MCP Playwright + agents tests E2E (planner, generator, healer) | MCP, Agents |
@@ -44,7 +45,10 @@ Ou via le mode interactif :
 **Installation directe :**
 ```bash
 /plugin install security@angelo-plugins
-/plugin install notifications@angelo-plugins
+# Notifications (choisir l'un des deux, mutuellement exclusifs)
+/plugin install notifications-system@angelo-plugins
+# ou
+/plugin install notifications-peon-ping@angelo-plugins
 /plugin install git@angelo-plugins
 /plugin install workflows@angelo-plugins
 /plugin install playwright@angelo-plugins
@@ -180,7 +184,8 @@ marketplace-claude-code/
 │   └── marketplace.json      # Registre de la marketplace
 ├── plugins/
 │   ├── security/             # Protection fichiers sensibles
-│   ├── notifications/        # Notifications sonores
+│   ├── notifications-system/  # Notifications sons système + OS
+│   ├── notifications-peon-ping/ # Notifications sons gaming (PeonPing)
 │   ├── git/                  # Commits + push securise
 │   ├── workflows/            # Workflow EPCT
 │   ├── playwright/           # MCP + Agents tests E2E
