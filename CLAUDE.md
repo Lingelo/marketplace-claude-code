@@ -36,7 +36,7 @@ plugins/<name>/
 
 - **security** — Hook blocking sensitive files (.env, keys, credentials). Exit code 2 = block.
 - **notifications-system** — System sound & OS notifications on Stop and permission_prompt events.
-- **notifications-peon-ping** — Gaming sound notifications (Warcraft, StarCraft, Portal...) via PeonPing. Mutually exclusive with notifications-system.
+- **notifications-peon-ping** — Gaming sound & visual notifications (Warcraft, StarCraft, Portal...) via PeonPing. Mutually exclusive with notifications-system.
 - **git** — `/commit` (conventional commits + Jira from branch) + `/push` (blocks main/master).
 - **workflows** — `/epct` and `/epct-jira` implementing Explore-Plan-Code-Test methodology.
 - **playwright** — MCP server + 3 agents (planner, generator, healer) for E2E tests.

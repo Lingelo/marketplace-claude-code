@@ -1,98 +1,65 @@
 ---
 name: peon-ping-setup
-description: "Install and configure PeonPing gaming notifications (Warcraft, StarCraft, Portal...)"
+description: "Install PeonPing gaming notifications and register Claude Code hooks"
 allowed-tools:
   - Bash
-  - Read
-  - Write
-  - AskUserQuestion
 ---
 
-# PeonPing Setup Wizard
+# PeonPing Setup
 
-You are a setup wizard for PeonPing gaming notifications. Guide the user through 5 phases.
+Install PeonPing and register its Claude Code hooks. This skill delegates entirely to PeonPing's native setup — no custom logic.
 
-## Phase 1 — Check Installation
+## Steps
 
-Check if PeonPing is already installed:
+### 1. Check if PeonPing is installed
 
 ```bash
-which peon && peon --version
+which peon 2>/dev/null && peon status 2>&1 || echo "PEON_NOT_FOUND"
 ```
 
-- If found: display the version and skip to Phase 3
-- If not found: proceed to Phase 2
+If `PEON_NOT_FOUND`, install it:
 
-## Phase 2 — Install PeonPing
-
-Detect the platform and install:
-
-**macOS (Homebrew):**
+**macOS:**
 ```bash
-brew tap PeonPing/tap
-brew install peon-ping
+brew tap PeonPing/tap && brew install peon-ping
 ```
 
-**Linux / other (curl):**
+**Linux:**
 ```bash
 curl -fsSL https://raw.githubusercontent.com/PeonPing/peon-ping/main/install.sh | bash
 ```
 
-After install, verify:
+If install fails, show the error and link to https://github.com/PeonPing/peon-ping. STOP.
+
+### 2. Run native setup
+
 ```bash
-peon --version
+peon-ping-setup
 ```
 
-If installation fails, show the error and link to https://github.com/PeonPing/peon-ping for manual installation.
+This registers all Claude Code hooks and installs 5 default sound packs. Show the full output to the user.
 
-## Phase 3 — Choose Sound Pack
-
-List available sound packs:
+### 3. Show available packs and current config
 
 ```bash
 peon packs list
+peon status
 ```
 
-Ask the user which pack they want to use. Common packs:
-- **peon** — Warcraft "Work complete!" / "More work?"
-- **glados** — Portal GLaDOS quotes
-- **kerrigan** — StarCraft Kerrigan quotes
-- **navi** — Zelda "Hey! Listen!"
+Display the results and tell the user:
 
-Set the chosen pack:
-```bash
-peon config set pack <chosen-pack>
-```
-
-## Phase 4 — Configure Options
-
-Ask the user about:
-
-1. **Volume** (0-100, default 80):
-```bash
-peon config set volume <value>
-```
-
-2. **Desktop overlay** (yes/no, default yes):
-```bash
-peon config set overlay <true|false>
-```
-
-## Phase 5 — Test
-
-Run a test notification:
-
-```bash
-peon preview task.complete
-```
-
-Ask the user if they heard the sound. If not, troubleshoot:
-- Check volume settings
-- Check audio output device
-- Try `peon preview input.required` as alternative
-
-Once confirmed working, display a success message:
-
-> PeonPing is configured! The `notifications-peon-ping` plugin will now play gaming sounds when Claude completes tasks or needs your attention.
+> PeonPing est installé et configuré ! Hooks Claude Code enregistrés.
 >
-> **Reminder:** Make sure `notifications-system` is NOT installed alongside this plugin to avoid double notifications.
+> **Pour changer de pack :**
+> ```
+> peon packs list --registry    # voir tous les packs
+> peon packs install <pack>     # installer un pack
+> peon packs use <pack>         # activer un pack
+> ```
+>
+> **Pour configurer :**
+> ```
+> peon volume 0.8               # régler le volume
+> peon notifications on/off     # notifications desktop
+> peon preview task.complete    # tester le son
+> ```
