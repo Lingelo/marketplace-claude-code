@@ -1,7 +1,7 @@
 ---
 name: skill
 description: Scaffold a Claude Code skill from a natural language description. Use when creating SKILL.md files, /commands, or extending Claude Code with new skills. Triggers on /factory:skill.
-allowed-tools: Read, Write, Glob, Grep, Bash
+allowed-tools: Read, Write, Glob, Grep, Bash, AskUserQuestion
 ---
 
 # Factory: Create Skill
@@ -29,6 +29,18 @@ Extract from `$ARGUMENTS`:
 
 If `$ARGUMENTS` is empty, ask the user: "What should this skill do? Describe it in natural language."
 
+## Step 1.5: Detect Mode (Create or Update)
+
+Check if a SKILL.md already exists at the target location:
+
+```bash
+# Look for existing skill with the same name
+ls -la <target-path>/skills/<skill-name>/SKILL.md 2>/dev/null
+```
+
+- **If exists** → switch to **Update mode** (jump to "Update Workflow" section at the end)
+- **If not** → continue with **Create mode** (proceed to Step 2)
+
 ## Step 2: Analyze the Description
 
 From the description, determine:
@@ -41,6 +53,22 @@ From the description, determine:
 - **Auto-activation paths**: Should this skill activate automatically for certain file patterns?
 - **Context isolation**: Does this need `context: fork` for subagent isolation?
 - **Hooks**: Does this skill need inline hooks? (e.g., PreToolUse validation)
+
+## Step 2.5: Interactive Clarification
+
+Review what was determined in Step 2. If the description is precise enough to resolve all decisions, **skip this step entirely**.
+
+Otherwise, use `AskUserQuestion` to ask **only** about decisions that remain ambiguous:
+
+- **"Which model should this skill use?"** (sonnet/opus/haiku/inherit) — only if not inferable from the description
+- **"Should this skill run in isolated context (fork)?"** — only if the skill seems complex enough to warrant it
+- **"Which tools does this skill need?"** — only if not obvious from the description
+- **"Should this skill auto-activate for certain file patterns?"** — only if path-based activation seems relevant
+
+Rules:
+- Ask at most 2-3 questions in a single prompt. Do not bombard the user.
+- If the description already implies clear answers, do not ask. Assume defaults.
+- Merge answers back into the analysis from Step 2 before proceeding.
 
 ## Step 3: Detect Target Path
 
@@ -101,6 +129,55 @@ Create the directory and SKILL.md:
 - Reference supporting files if the skill generates them
 
 3. If the skill needs supporting files (scripts, templates, examples), create them in the skill directory.
+
+## Update Workflow (Update Mode)
+
+When Step 1.5 detected an existing SKILL.md:
+
+### U1: Read Existing Skill
+
+```bash
+cat <target-path>/skills/<skill-name>/SKILL.md
+```
+
+Parse the existing frontmatter and body content.
+
+### U2: Compare Current vs Proposed
+
+Build a diff of what the user wants to change. Show the user:
+
+```
+Current frontmatter:
+  name: <current>
+  description: <current>
+  allowed-tools: <current>
+  ...
+
+Proposed changes:
+  <field>: <current> → <new>
+  ...
+```
+
+### U3: Confirm Changes
+
+Use `AskUserQuestion` to present the comparison and ask:
+- "Here are the proposed frontmatter changes. Which should I apply?" (show the diff)
+- "Should the body content (instructions) also be updated?" — only if the user's description implies structural changes
+
+### U4: Apply Approved Changes
+
+- Use `Edit` (not Write) to apply only the approved modifications
+- Preserve any content the user did not ask to change
+- If body updates are approved, rewrite only the affected sections
+
+### U5: Post-Update Summary
+
+Display:
+```
+Skill updated: <skill-name>
+Location: <full-path>/skills/<skill-name>/SKILL.md
+Changes applied: <list of changed fields/sections>
+```
 
 ## Step 7: Post-Generation Summary
 

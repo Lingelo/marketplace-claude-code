@@ -1,7 +1,7 @@
 ---
 name: hook
 description: Scaffold Claude Code hooks (PreToolUse, Stop, Notification, etc.) from a natural language description. Use when creating hooks.json, hook scripts, or event-driven automation. Triggers on /factory:hook.
-allowed-tools: Read, Write, Edit, Glob, Grep, Bash
+allowed-tools: Read, Write, Edit, Glob, Grep, Bash, AskUserQuestion
 ---
 
 # Factory: Create Hook
@@ -25,6 +25,18 @@ Bash script template: @../../templates/hook-script.sh
 ## Step 1: Parse Input
 
 If `$ARGUMENTS` is empty, ask: "What should this hook do? Describe the behavior in natural language."
+
+## Step 1.5: Detect Mode (Create or Update)
+
+Check if hooks already exist at the target location:
+
+```bash
+# Look for existing hooks.json in plugin context
+cat <target-plugin>/hooks/hooks.json 2>/dev/null
+```
+
+- **If exists** → switch to **Update mode** (jump to "Update Workflow" section at the end)
+- **If not** → continue with **Create mode** (proceed to Step 2)
 
 ## Step 2: Analyze the Description
 
@@ -68,6 +80,22 @@ If the intent is ambiguous, ask the user to clarify.
 
 - **Node.js** if: complex JSON parsing, multiple conditions, file system operations
 - **Bash** if: simple checks, calling system commands (afplay, osascript, notify-send)
+
+## Step 2.5: Interactive Clarification
+
+Review what was determined in Step 2. If the description is precise enough to resolve all decisions, **skip this step entirely**.
+
+Otherwise, use `AskUserQuestion` to ask **only** about decisions that remain ambiguous:
+
+- **"Which event should trigger this hook?"** — if the description could match multiple events (e.g., PreToolUse vs PostToolUse)
+- **"What type of hook?"** (command/http/prompt/agent) — if not obvious from the description
+- **"Which tool(s) should the matcher target?"** — if PreToolUse event and the tool scope is unclear
+- **"Should the script be Node.js or Bash?"** — for command type when the complexity is borderline
+
+Rules:
+- Ask at most 2-3 questions in a single prompt. Do not bombard the user.
+- If the description already implies clear answers, do not ask. Assume defaults.
+- Merge answers back into the analysis from Step 2 before proceeding.
 
 ## Step 3: Detect Target Path
 
@@ -162,6 +190,61 @@ case "$(uname -s)" in
   Linux*)  # Linux ;;
   MINGW*|MSYS*|CYGWIN*) # Windows ;;
 esac
+```
+
+## Update Workflow (Update Mode)
+
+When Step 1.5 detected an existing hooks.json:
+
+### U1: Read Existing Hooks
+
+```bash
+cat <target-plugin>/hooks/hooks.json
+```
+
+Parse all existing hook entries grouped by event type.
+
+### U2: Show Current Hooks
+
+Display the existing hooks to the user:
+
+```
+Current hooks in <plugin-name>:
+  1. [PreToolUse] matcher: "Bash" → scripts/block-dangerous.sh
+  2. [Stop] → scripts/notify-done.js
+  ...
+```
+
+Use `AskUserQuestion` to ask:
+- "Here are the existing hooks. Which one do you want to modify? Or should I add a new hook?"
+
+### U3: Propose Changes
+
+Based on the user's answer:
+
+**For modifications:**
+- Show current hook config and script logic
+- Propose specific changes via `AskUserQuestion`:
+  - "Here is the current script logic. What should change?"
+  - Show before/after for the hooks.json entry
+
+**For additions:**
+- Proceed with normal creation flow (Steps 2-5) but append to existing hooks.json instead of creating new
+
+### U4: Apply Approved Changes
+
+- Use `Edit` (not Write) to modify hooks.json entries
+- For script changes: use `Edit` to update only the affected sections
+- Preserve all hooks and scripts the user did not ask to change
+
+### U5: Post-Update Summary
+
+Display:
+```
+Hook updated: <event-type> [<matcher>]
+Location: <path-to-hooks.json>
+Script: <path-to-script> (if modified)
+Changes: <summary of what changed>
 ```
 
 ## Step 7: Post-Generation Summary

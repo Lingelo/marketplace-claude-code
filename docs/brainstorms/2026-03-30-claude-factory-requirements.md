@@ -15,37 +15,53 @@ Creer des outils Claude Code (skills, hooks, agents, rules, commandes) demande d
 
 ## Requirements
 
+### R0. Interaction hybride (transversal a tous les skills R1-R6)
+- Chaque skill accepte une description en langage naturel comme point de depart
+- Apres analyse de la description, le skill pose des questions ciblees via `AskUserQuestion` UNIQUEMENT pour les decisions non resolues par la description
+- Si la description est suffisamment precise, aucune question n'est posee
+- Chaque skill supporte la **mise a jour** : si l'artefact cible existe deja, le skill lit l'existant, montre les differences, et propose des modifications interactives via `AskUserQuestion`
+
 ### R1. Scaffold de skills (`/factory:skill`)
 - Accepte une description en langage naturel de ce que le skill doit faire
 - Genere la structure complete : repertoire, SKILL.md avec frontmatter valide, fichiers support si necessaire
 - Determine automatiquement les champs frontmatter pertinents (`allowed-tools`, `model`, `effort`, `context`, `paths`, `shell`, `hooks` inline, etc.) a partir de la description
+- Pose des questions interactives si des decisions cles restent ambigues (ex: "Quel model ? sonnet/opus/haiku", "Faut-il un context: fork ?")
 - Genere le corps du SKILL.md avec des instructions actionables, pas du placeholder
+- **Mode update** : si le skill existe, lit le SKILL.md existant et propose des modifications (ajout de champs, mise a jour du body, etc.)
 
 ### R2. Scaffold de hooks (`/factory:hook`)
 - Accepte une description du comportement souhaite (ex: "bloquer les rm -rf", "notifier sur Slack quand un test fail")
 - Genere le `hooks.json` avec le bon event, matcher, type de hook (`command`/`http`/`prompt`/`agent`)
+- Pose des questions interactives si l'event ou le type de hook est ambigu
 - Genere le script d'implementation si type `command` (Node.js ou Bash)
 - Respecte les conventions : exit code 0/2, JSON stdin/stdout, timeout raisonnable
+- **Mode update** : si `hooks.json` existe, lit l'existant et propose d'ajouter/modifier un hook
 
 ### R3. Scaffold d'agents (`/factory:agent`)
 - Accepte une description du role de l'agent
 - Genere le fichier `.md` avec frontmatter complet (`name`, `description`, `tools`/`disallowedTools`, `model`, `maxTurns`, `effort`, `isolation`, `skills`, `hooks` inline)
+- Pose des questions interactives sur le model, les tools, et les contraintes si ambigu
 - Genere un system prompt de qualite adapte au role decrit
+- **Mode update** : si l'agent existe, lit et propose des modifications (system prompt, frontmatter)
 
 ### R4. Scaffold de commandes (`/factory:command`)
 - Accepte une description de la commande
 - Genere le fichier `.md` avec frontmatter et contenu
-- Detecte si une commande serait mieux servie en tant que skill (structure plus riche) et le suggere
+- Detecte si une commande serait mieux servie en tant que skill (structure plus riche) et le suggere via question interactive
+- **Mode update** : si la commande existe, lit et propose des modifications
 
 ### R5. Scaffold de rules (`/factory:rule`)
 - Accepte une description de la regle
 - Genere le fichier `.md` dans `.claude/rules/` avec frontmatter `paths` si pertinent
-- Aide a determiner si la regle doit etre unconditional ou path-scoped
+- Pose une question interactive pour determiner si la regle doit etre unconditional ou path-scoped, avec suggestion basee sur l'analyse
+- **Mode update** : si la rule existe, lit et propose des modifications
 
 ### R6. Scaffold de plugin complet (`/factory:plugin`)
 - Accepte une description du plugin
+- Pose des questions interactives sur les composants a inclure (skills, hooks, agents, MCP, templates)
 - Genere la structure complete : `plugin.json`, README.md, et les sous-composants identifies
 - Propose l'enregistrement dans le `marketplace.json` si dans le contexte du marketplace
+- **Mode update** : si le plugin existe, lit la structure et propose d'ajouter des composants
 
 ### R7. Maintenance CLAUDE.md (`/factory:claude-md`)
 - Analyse un CLAUDE.md existant
@@ -71,7 +87,8 @@ Creer des outils Claude Code (skills, hooks, agents, rules, commandes) demande d
 
 ## Success Criteria
 
-- Un utilisateur peut creer un skill fonctionnel en une seule commande `/factory:skill` + description
+- Un utilisateur peut creer un skill fonctionnel en une seule commande `/factory:skill` + description, avec des questions interactives si des decisions restent ambigues
+- Un utilisateur peut mettre a jour un artefact existant via le meme skill (detection automatique du mode create/update)
 - Les artefacts generes passent un audit `/factory:audit` sans erreur
 - La reference docs couvre 100% des champs frontmatter et events hooks officiels (mars 2026)
 - Le plugin fonctionne entierement offline (pas de dependance MCP/reseau)
@@ -87,7 +104,8 @@ Creer des outils Claude Code (skills, hooks, agents, rules, commandes) demande d
 ## Key Decisions
 
 - **Standalone** : Aucune dependance a `compound-engineering` ou autre plugin du marketplace. Peut coexister avec `create-agent-skills`.
-- **Prompt libre** : L'utilisateur decrit ce qu'il veut en langage naturel, le plugin genere directement. Pas de wizard interactif a questions multiples.
+- **Hybride interactif** : L'utilisateur donne une description libre, puis le skill pose des questions ciblees via `AskUserQuestion` uniquement pour les decisions non resolues. Pas de wizard complet, mais un accompagnement intelligent.
+- **Creation + update** : Chaque skill detecte si l'artefact existe. Si oui, mode update interactif (lecture de l'existant, proposition de modifications). Si non, mode creation.
 - **Doc embarquee statique** : La reference officielle est compilee dans le plugin. Avantage : offline, predictible. Trade-off : necessite des mises a jour manuelles quand Anthropic change les specs.
 - **Nom : `claude-factory`** : Invocation via `/factory:skill`, `/factory:hook`, etc.
 

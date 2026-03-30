@@ -1,7 +1,7 @@
 ---
 name: rule
 description: Scaffold a Claude Code rule (.claude/rules/) from a natural language description. Use when creating project rules, coding standards, or path-scoped instructions. Triggers on /factory:rule.
-allowed-tools: Read, Write, Glob, Grep, Bash
+allowed-tools: Read, Write, Glob, Grep, Bash, AskUserQuestion
 ---
 
 # Factory: Create Rule
@@ -19,7 +19,17 @@ Official specification: @../../references/rule-spec.md
 
 Extract name + description from `$ARGUMENTS`. If empty, ask: "What rule should Claude follow? Describe it in natural language."
 
-## Step 2: Analyze the Description
+## Step 2: Detect Mode (Create or Update)
+
+Check if the target rule already exists:
+```bash
+ls -la .claude/rules/<rule-name>.md 2>/dev/null
+```
+
+- **If exists** → **Update mode** (go to Step 9: Update Workflow)
+- **If not** → **Create mode** (continue to Step 3)
+
+## Step 3: Analyze the Description
 
 Determine:
 
@@ -52,7 +62,17 @@ The rule should be:
 - Actionable (Claude can follow it)
 - Concise (one topic per rule)
 
-## Step 3: Detect Target Path
+## Step 4: Interactive Clarification
+
+Use AskUserQuestion to resolve ambiguities — **only if** the description leaves key decisions unclear. Skip this step if the description is precise enough.
+
+Ask only what is unresolved:
+- "Should this rule be path-scoped or global?" — include a recommendation based on the analysis in Step 3 (e.g., "Based on your description mentioning `.tsx` files, I recommend path-scoped. Should this rule be path-scoped or global?")
+- "Which file patterns should trigger this rule?" — only if path-scoped was chosen and patterns are not obvious from the description
+
+Do not ask questions whose answers are obvious from the description.
+
+## Step 5: Detect Target Path
 
 Rules always go to `.claude/rules/` — they are project-level, not plugin-level.
 
@@ -65,7 +85,7 @@ Target: `.claude/rules/<rule-name>.md`
 
 For user-level rules: `~/.claude/rules/<rule-name>.md` (only if user explicitly wants a global rule)
 
-## Step 4: Check for Collisions
+## Step 6: Check for Collisions
 
 ```bash
 ls -la .claude/rules/<rule-name>.md 2>/dev/null
@@ -73,7 +93,7 @@ ls -la .claude/rules/<rule-name>.md 2>/dev/null
 
 If exists: show error, suggest alternative name. Do not overwrite.
 
-## Step 5: Generate the Rule
+## Step 7: Generate the Rule
 
 Create `.claude/rules/<rule-name>.md`:
 
@@ -104,13 +124,51 @@ paths:
 - One topic per rule file
 - Keep it concise — rules are loaded into context every session
 
-## Step 6: Post-Generation Summary
+## Step 8: Post-Generation Summary
 
 ```
 Rule created: <rule-name>
 Location: .claude/rules/<rule-name>.md
 Scope: <global | path-scoped to: pattern1, pattern2>
 Loaded: <every session | when Claude reads matching files>
+
+Tip: Run /factory:audit .claude/rules/<rule-name>.md to validate.
+```
+
+## Step 9: Update Workflow (Update Mode)
+
+Triggered when Step 2 detects the rule already exists.
+
+### 9.1: Read Existing Rule
+
+Read the existing rule file and parse its frontmatter (paths) and body content.
+
+### 9.2: Show Current State
+
+Display to the user:
+```
+Existing rule: <rule-name>
+Location: .claude/rules/<rule-name>.md
+Scope: <global | path-scoped to: pattern1, pattern2>
+---
+<current rule content>
+```
+
+### 9.3: Ask What to Modify
+
+Use AskUserQuestion: "What would you like to change? (e.g., rule content, scope, path patterns, or add/remove instructions)"
+
+### 9.4: Apply Modifications
+
+Edit the existing file with the requested changes. Use the Edit tool to make targeted modifications, not a full rewrite.
+
+### 9.5: Post-Update Summary
+
+```
+Rule updated: <rule-name>
+Location: .claude/rules/<rule-name>.md
+Scope: <global | path-scoped to: pattern1, pattern2>
+Changes: <summary of what was modified>
 
 Tip: Run /factory:audit .claude/rules/<rule-name>.md to validate.
 ```

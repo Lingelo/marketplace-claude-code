@@ -1,7 +1,7 @@
 ---
 name: agent
 description: Scaffold a Claude Code agent (subagent) from a natural language description. Use when creating agent .md files, specialized subagents, or AI personas. Triggers on /factory:agent.
-allowed-tools: Read, Write, Glob, Grep, Bash
+allowed-tools: Read, Write, Glob, Grep, Bash, AskUserQuestion
 ---
 
 # Factory: Create Agent
@@ -25,6 +25,18 @@ Extract from `$ARGUMENTS`:
 2. **Description**: Natural language description of the agent's role and responsibilities
 
 If `$ARGUMENTS` is empty, ask: "What role should this agent fill? Describe its responsibilities."
+
+## Step 1.5: Detect Mode (Create or Update)
+
+Check if an agent file already exists at the target location:
+
+```bash
+# Look for existing agent with the same name
+ls -la <target-path>/agents/<agent-name>.md 2>/dev/null
+```
+
+- **If exists** → switch to **Update mode** (jump to "Update Workflow" section at the end)
+- **If not** → continue with **Create mode** (proceed to Step 2)
 
 ## Step 2: Analyze the Description
 
@@ -53,6 +65,22 @@ The system prompt should:
 - Specify output format when relevant
 - Add constraints (what NOT to do)
 - Be written in the language matching the user's description
+
+## Step 2.5: Interactive Clarification
+
+Review what was determined in Step 2. If the description is precise enough to resolve all decisions, **skip this step entirely**.
+
+Otherwise, use `AskUserQuestion` to ask **only** about decisions that remain ambiguous:
+
+- **"Which model for this agent?"** (opus/sonnet/haiku) — especially important for agents, as model choice significantly impacts behavior and cost
+- **"Should this agent have restricted tools?"** — if the role implies the agent should not have full access (e.g., a reviewer should not write code)
+- **"Maximum turns?"** — if the scope suggests the agent should be bounded (focused tasks vs exploratory)
+- **"Should this run in a worktree?"** — if the agent modifies files and might conflict with main work
+
+Rules:
+- Ask at most 2-3 questions in a single prompt. Do not bombard the user.
+- If the description already implies clear answers, do not ask. Assume defaults.
+- Merge answers back into the analysis from Step 2 before proceeding.
 
 ## Step 3: Detect Target Path
 
@@ -92,6 +120,55 @@ Create the agent file with:
 - Specific to the role described
 - Including examples when helpful
 - Structured with markdown headers
+
+## Update Workflow (Update Mode)
+
+When Step 1.5 detected an existing agent .md:
+
+### U1: Read Existing Agent
+
+```bash
+cat <target-path>/agents/<agent-name>.md
+```
+
+Parse the existing frontmatter and system prompt body.
+
+### U2: Show Current State
+
+Display the existing agent configuration:
+
+```
+Current agent: <agent-name>
+  Frontmatter:
+    model: <current>
+    tools: <current>
+    maxTurns: <current>
+    ...
+  System prompt: <first 3-5 lines preview>
+```
+
+### U3: Confirm Changes
+
+Use `AskUserQuestion` to ask:
+- "What do you want to change?" (frontmatter, system prompt, or both)
+- If frontmatter: show current values vs proposed and ask which to apply
+- If system prompt: show current prompt and ask what should change (tone, scope, constraints, etc.)
+
+### U4: Apply Approved Changes
+
+- Use `Edit` (not Write) to apply only the approved modifications
+- For frontmatter changes: update only the changed fields
+- For system prompt changes: rewrite only the affected sections
+- Preserve any content the user did not ask to change
+
+### U5: Post-Update Summary
+
+Display:
+```
+Agent updated: <agent-name>
+Location: <full-path>/agents/<agent-name>.md
+Changes applied: <list of changed fields/sections>
+```
 
 ## Step 6: Post-Generation Summary
 
