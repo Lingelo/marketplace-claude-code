@@ -77,6 +77,12 @@
             "source": "./plugins/maintenance",
             "description": "Maintenance tools: clean orphan plugins, diagnostics",
             "category": "productivity"
+        },
+        {
+            "name": "claude-factory",
+            "source": "./plugins/claude-factory",
+            "description": "Meta-plugin for creating Claude Code tools: skills, hooks, agents, commands, rules, CLAUDE.md maintenance, audit, and docs reference",
+            "category": "development"
         }
     ]
 }
