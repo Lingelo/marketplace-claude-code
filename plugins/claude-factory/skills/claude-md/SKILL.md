@@ -1,7 +1,7 @@
 ---
 name: claude-md
 description: Analyze, optimize, or generate CLAUDE.md files following official Anthropic best practices. Use when maintaining project instructions, checking CLAUDE.md quality, or creating new CLAUDE.md files. Triggers on /factory:claude-md.
-allowed-tools: Read, Write, Edit, Glob, Grep, Bash
+allowed-tools: Read, Write, Edit, Glob, Grep, Bash, AskUserQuestion
 ---
 
 # Factory: CLAUDE.md Maintenance

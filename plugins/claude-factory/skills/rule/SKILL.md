@@ -1,7 +1,7 @@
 ---
 name: rule
 description: Scaffold a Claude Code rule (.claude/rules/) from a natural language description. Use when creating project rules, coding standards, or path-scoped instructions. Triggers on /factory:rule.
-allowed-tools: Read, Write, Glob, Grep, Bash, AskUserQuestion
+allowed-tools: Read, Write, Edit, Glob, Grep, Bash, AskUserQuestion
 ---
 
 # Factory: Create Rule

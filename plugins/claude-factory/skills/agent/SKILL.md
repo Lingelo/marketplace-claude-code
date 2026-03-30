@@ -1,7 +1,7 @@
 ---
 name: agent
 description: Scaffold a Claude Code agent (subagent) from a natural language description. Use when creating agent .md files, specialized subagents, or AI personas. Triggers on /factory:agent.
-allowed-tools: Read, Write, Glob, Grep, Bash, AskUserQuestion
+allowed-tools: Read, Write, Edit, Glob, Grep, Bash, AskUserQuestion
 ---
 
 # Factory: Create Agent

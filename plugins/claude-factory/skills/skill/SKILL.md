@@ -1,7 +1,7 @@
 ---
 name: skill
 description: Scaffold a Claude Code skill from a natural language description. Use when creating SKILL.md files, /commands, or extending Claude Code with new skills. Triggers on /factory:skill.
-allowed-tools: Read, Write, Glob, Grep, Bash, AskUserQuestion
+allowed-tools: Read, Write, Edit, Glob, Grep, Bash, AskUserQuestion
 ---
 
 # Factory: Create Skill

@@ -1,7 +1,7 @@
 ---
 name: command
 description: Scaffold a Claude Code slash command from a natural language description. Use when creating simple .md commands. Suggests converting to a skill when appropriate. Triggers on /factory:command.
-allowed-tools: Read, Write, Glob, Grep, Bash, AskUserQuestion
+allowed-tools: Read, Write, Edit, Glob, Grep, Bash, AskUserQuestion
 ---
 
 # Factory: Create Command
