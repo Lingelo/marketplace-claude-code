@@ -32,7 +32,7 @@ plugins/<name>/
 | **Hook** | `hooks.json` → scripts | Tool events (PreToolUse, Stop, Notification) |
 | **MCP** | `.mcp.json` | External service integration |
 
-## 12 Plugins
+## 13 Plugins
 
 - **security** — Hook blocking sensitive files (.env, keys, credentials). Exit code 2 = block.
 - **notifications-system** — System sound & OS notifications on Stop and permission_prompt events.
@@ -46,6 +46,7 @@ plugins/<name>/
 - **maintenance** — `/plugin-clean` for orphan plugin cleanup.
 - **figma** — MCP server for Figma design integration.
 - **atlassian** — MCP server for Jira + Confluence via remote SSE.
+- **claude-factory** — Meta-plugin for creating Claude Code tools (skills, hooks, agents, commands, rules), CLAUDE.md maintenance, audit, and docs reference.
 
 ## Adding a New Plugin
 
