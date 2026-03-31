@@ -32,20 +32,14 @@ plugins/<name>/
 | **Hook** | `hooks.json` → scripts | Tool events (PreToolUse, Stop, Notification) |
 | **MCP** | `.mcp.json` | External service integration |
 
-## 13 Plugins
+## 7 Plugins
 
 - **security** — Hook blocking sensitive files (.env, keys, credentials). Exit code 2 = block.
 - **notifications-system** — System sound & OS notifications on Stop and permission_prompt events.
-- **notifications-peon-ping** — Gaming sound & visual notifications (Warcraft, StarCraft, Portal...) via PeonPing. Mutually exclusive with notifications-system.
 - **git** — `/commit` (conventional commits + Jira from branch) + `/push` (blocks main/master).
-- **workflows** — `/epct` and `/epct-jira` implementing Explore-Plan-Code-Test methodology.
 - **playwright** — MCP server + 3 agents (planner, generator, healer) for E2E tests.
-- **release-note** — `/release-note` generates notes from Jira Done tickets (requires atlassian MCP).
 - **statusline** — `/statusline-setup` 11-phase wizard for cost/token tracking statusline.
 - **experts** — Architect agent (Opus + ultrathink) for deep code analysis.
-- **maintenance** — `/plugin-clean` for orphan plugin cleanup.
-- **figma** — MCP server for Figma design integration.
-- **atlassian** — MCP server for Jira + Confluence via remote SSE.
 - **claude-factory** — Meta-plugin for creating Claude Code tools (skills, hooks, agents, commands, rules), CLAUDE.md maintenance, audit, and docs reference.
 
 ## Adding a New Plugin

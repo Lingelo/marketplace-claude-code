@@ -2,8 +2,6 @@
 
 Notifications sonores système et visuelles (OS) quand Claude termine une tâche ou a besoin d'attention.
 
-> **Incompatibilité** : Ce plugin est mutuellement exclusif avec `notifications-peon-ping`. N'installez qu'un seul des deux pour éviter les doubles notifications.
-
 > **Migration** : Ce plugin s'appelait auparavant `notifications`. Si vous aviez `notifications@angelo-plugins` installé, désinstallez-le et réinstallez sous le nouveau nom :
 > ```bash
 > /plugin install notifications-system@angelo-plugins

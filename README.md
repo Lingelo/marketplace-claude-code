@@ -8,16 +8,11 @@ Marketplace de plugins pour Claude Code, fournissant des outils et workflows de 
 |--------|-------------|------------|
 | [**security**](plugins/security/README.md) | Bloque l'accès aux fichiers sensibles (.env, secrets, clés) | Hook |
 | [**notifications-system**](plugins/notifications-system/README.md) | Sons système et notifications OS | Hook |
-| [**notifications-peon-ping**](plugins/notifications-peon-ping/README.md) | Sons gaming (Warcraft, StarCraft, Portal...) via PeonPing | Hook, Skill |
 | [**git**](plugins/git/README.md) | Commits conventionnels + push securisé (bloque main/master) | Skills |
-| [**workflows**](plugins/workflows/README.md) | Workflow de développement Explore-Plan-Code-Test | Command, Agent |
 | [**playwright**](plugins/playwright/README.md) | MCP Playwright + agents tests E2E (planner, generator, healer) | MCP, Agents |
-| [**release-note**](plugins/release-note/README.md) | Génère des release notes depuis Jira via MCP Atlassian | Skill |
 | [**statusline**](plugins/statusline/README.md) | Statusline avec suivi des coûts, git et support multi-plans | Command, Script |
 | [**experts**](plugins/experts/README.md) | Agent architecte pour analyse de code et évolutions | Agent |
-| [**maintenance**](plugins/maintenance/README.md) | Outils de maintenance (nettoyage plugins orphelins) | Command |
-| [**figma**](plugins/figma/README.md) | Serveur MCP Figma pour interagir avec les designs | MCP |
-| [**atlassian**](plugins/atlassian/README.md) | Serveur MCP Atlassian pour Jira et Confluence | MCP |
+| [**claude-factory**](plugins/claude-factory/README.md) | Meta-plugin pour créer des outils Claude Code | Skills |
 
 ## Installation
 
@@ -45,19 +40,12 @@ Ou via le mode interactif :
 **Installation directe :**
 ```bash
 /plugin install security@angelo-plugins
-# Notifications (choisir l'un des deux, mutuellement exclusifs)
 /plugin install notifications-system@angelo-plugins
-# ou
-/plugin install notifications-peon-ping@angelo-plugins
 /plugin install git@angelo-plugins
-/plugin install workflows@angelo-plugins
 /plugin install playwright@angelo-plugins
-/plugin install release-note@angelo-plugins
 /plugin install statusline@angelo-plugins
 /plugin install experts@angelo-plugins
-/plugin install maintenance@angelo-plugins
-/plugin install figma@angelo-plugins
-/plugin install atlassian@angelo-plugins
+/plugin install claude-factory@angelo-plugins
 ```
 
 ## Configuration équipe
@@ -110,27 +98,6 @@ Aucune commande nécessaire - fonctionne automatiquement via hook.
 # Pousse les commits (BLOQUE si sur main/master)
 ```
 
-### Workflow EPCT
-```bash
-/epct
-# Suit la méthodologie Explore → Plan → Code → Test
-
-/epct-jira PROJ-123
-# Récupère le contexte Jira puis lance le workflow EPCT
-# Sans argument, demande le numéro de ticket
-```
-`/epct-jira` nécessite le MCP Atlassian configuré.
-
-### Release Notes
-```bash
-/release-note team-alpha
-# Génère une release note des tickets Done du sprint courant pour l'équipe
-
-/release-note PROJ FEAT
-# Génère une release note pour les projets spécifiés
-```
-Nécessite le MCP Atlassian configuré.
-
 ### Statusline
 ```bash
 /statusline-setup
@@ -147,34 +114,11 @@ Quelle est la dette technique de ce projet ?
 ```
 Agent Opus pour analyses approfondies et propositions d'évolution.
 
-### Maintenance
-```bash
-/plugin-clean
-# Détecte et supprime les plugins orphelins ou en erreur
-```
-
-## Plugins MCP
-
-Des serveurs MCP sont disponibles en tant que plugins pour une installation simplifiée :
-
-| Plugin | Description | Installation |
-|--------|-------------|--------------|
-| **atlassian** | Jira et Confluence | `/plugin install atlassian@angelo-plugins` |
-| **figma** | Designs Figma | `/plugin install figma@angelo-plugins` |
-| **playwright** | Tests E2E (inclut le MCP) | `/plugin install playwright@angelo-plugins` |
-
-### Utilisation avec les plugins
-
-```bash
-# Installer le MCP Atlassian pour /release-note et /epct-jira
-/plugin install atlassian@angelo-plugins
-
-# Installer Playwright pour les tests E2E
-/plugin install playwright@angelo-plugins
-
-# Installer Figma pour l'integration design
-/plugin install figma@angelo-plugins
-```
+### Playwright
+Le plugin inclut un serveur MCP Playwright et 3 agents spécialisés pour les tests E2E :
+- **Planner** — explore l'application et conçoit les scénarios de test
+- **Generator** — génère le code de test Playwright
+- **Healer** — débugge et corrige les tests en échec
 
 ## Structure
 
@@ -184,17 +128,12 @@ marketplace-claude-code/
 │   └── marketplace.json      # Registre de la marketplace
 ├── plugins/
 │   ├── security/             # Protection fichiers sensibles
-│   ├── notifications-system/  # Notifications sons système + OS
-│   ├── notifications-peon-ping/ # Notifications sons gaming (PeonPing)
+│   ├── notifications-system/ # Notifications sons système + OS
 │   ├── git/                  # Commits + push securise
-│   ├── workflows/            # Workflow EPCT
 │   ├── playwright/           # MCP + Agents tests E2E
-│   ├── release-note/         # Release notes Jira
 │   ├── statusline/           # Statusline personnalisée
 │   ├── experts/              # Agent architecte
-│   ├── maintenance/          # Outils de maintenance
-│   ├── figma/                # MCP Figma
-│   └── atlassian/            # MCP Atlassian
+│   └── claude-factory/       # Meta-plugin creation outils
 └── README.md
 ```
 
