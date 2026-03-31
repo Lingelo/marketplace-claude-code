@@ -1,9 +1,0 @@
-{
-  "name": "notifications-peon-ping",
-  "description": "Gaming sound notifications (Warcraft, StarCraft, Portal...) via PeonPing",
-  "version": "1.0.0",
-  "author": {
-    "name": "Angelo LIMA",
-    "email": "contact@example.com"
-  }
-}

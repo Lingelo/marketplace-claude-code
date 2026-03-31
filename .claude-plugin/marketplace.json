@@ -2,8 +2,8 @@
     "$schema": "https://anthropic.com/claude-code/marketplace.schema.json",
     "name": "angelo-plugins",
     "owner": {
-        "name": "your-team",
-        "email": "contact@example.com"
+        "name": "Angelo Lima",
+        "email": "angelomiguellima@gmail.com"
     },
     "plugins": [
         {
@@ -19,21 +19,9 @@
             "category": "productivity"
         },
         {
-            "name": "notifications-peon-ping",
-            "source": "./plugins/notifications-peon-ping",
-            "description": "Gaming sound notifications (Warcraft, StarCraft, Portal...) via PeonPing",
-            "category": "productivity"
-        },
-        {
             "name": "git",
             "source": "./plugins/git",
             "description": "Git utilities: conventional commits with Jira extraction + safe push (blocks main/master)",
-            "category": "development"
-        },
-        {
-            "name": "workflows",
-            "source": "./plugins/workflows",
-            "description": "Development workflows (EPCT methodology)",
             "category": "development"
         },
         {
@@ -41,24 +29,6 @@
             "source": "./plugins/playwright",
             "description": "Playwright MCP + agents pour les tests E2E automatises",
             "category": "development"
-        },
-        {
-            "name": "figma",
-            "source": "./plugins/figma",
-            "description": "MCP Figma pour interagir avec les designs",
-            "category": "integration"
-        },
-        {
-            "name": "atlassian",
-            "source": "./plugins/atlassian",
-            "description": "MCP Atlassian pour Jira et Confluence",
-            "category": "integration"
-        },
-        {
-            "name": "release-note",
-            "source": "./plugins/release-note",
-            "description": "Generate release notes from Jira tickets via MCP Atlassian",
-            "category": "productivity"
         },
         {
             "name": "statusline",
@@ -71,12 +41,6 @@
             "source": "./plugins/experts",
             "description": "Senior architect agent for deep code analysis and evolution proposals",
             "category": "development"
-        },
-        {
-            "name": "maintenance",
-            "source": "./plugins/maintenance",
-            "description": "Maintenance tools: clean orphan plugins, diagnostics",
-            "category": "productivity"
         },
         {
             "name": "claude-factory",
