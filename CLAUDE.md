@@ -34,7 +34,7 @@ plugins/<name>/
 
 ## 7 Plugins
 
-- **security** — Hook blocking sensitive files (.env, keys, credentials). Exit code 2 = block.
+- **security** — Hook blocking sensitive files (.env, keys, credentials) + secret scanner detecting ~30 types of leaked secrets in git commits. Exit code 2 = block.
 - **notifications-system** — System sound & OS notifications on Stop and permission_prompt events.
 - **git** — `/commit` (conventional commits + Jira from branch) + `/push` (blocks main/master).
 - **playwright** — MCP server + 3 agents (planner, generator, healer) for E2E tests.

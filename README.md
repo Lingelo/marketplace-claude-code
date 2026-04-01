@@ -6,7 +6,7 @@ Marketplace de plugins pour Claude Code, fournissant des outils et workflows de 
 
 | Plugin | Description | Composants |
 |--------|-------------|------------|
-| [**security**](plugins/security/README.md) | Bloque l'accès aux fichiers sensibles (.env, secrets, clés) | Hook |
+| [**security**](plugins/security/README.md) | Bloque l'accès aux fichiers sensibles + scanne les commits pour détecter les secrets | Hook |
 | [**notifications-system**](plugins/notifications-system/README.md) | Sons système et notifications OS | Hook |
 | [**git**](plugins/git/README.md) | Commits conventionnels + push securisé (bloque main/master) | Skills |
 | [**playwright**](plugins/playwright/README.md) | MCP Playwright + agents tests E2E (planner, generator, healer) | MCP, Agents |
@@ -84,7 +84,10 @@ Ajouter dans le `.claude/settings.json` de votre projet pour auto-configurer tou
 ## Exemples d'utilisation
 
 ### Plugin Security
-Bloque automatiquement l'accès aux fichiers `.env`, `credentials.json`, `.pem`, etc.
+Deux protections automatiques via hooks `PreToolUse` :
+- **Blocage fichiers sensibles** — empêche l'accès aux `.env`, `credentials.json`, `.pem`, etc.
+- **Secret Scanner** — scanne les `git commit` pour détecter ~30 types de secrets (Anthropic, OpenAI, AWS, GitHub, GitLab, Slack, Stripe...) et bloque si des clés API ou tokens sont trouvés dans les fichiers stagés.
+
 Aucune commande nécessaire - fonctionne automatiquement via hook.
 
 > **Note sécurité** : Ce plugin utilise des **hooks `PreToolUse`** plutôt que les `deny` rules de `settings.json`. Les deny rules ont des [bugs connus](https://github.com/anthropics/claude-code/issues/6699) où elles sont parfois ignorées. Les hooks avec exit code 2 garantissent un blocage fiable.
@@ -127,7 +130,7 @@ marketplace-claude-code/
 ├── .claude-plugin/
 │   └── marketplace.json      # Registre de la marketplace
 ├── plugins/
-│   ├── security/             # Protection fichiers sensibles
+│   ├── security/             # Protection fichiers sensibles + secret scanner
 │   ├── notifications-system/ # Notifications sons système + OS
 │   ├── git/                  # Commits + push securise
 │   ├── playwright/           # MCP + Agents tests E2E
