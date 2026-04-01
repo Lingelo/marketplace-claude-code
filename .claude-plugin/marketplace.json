@@ -9,7 +9,7 @@
         {
             "name": "security",
             "source": "./plugins/security",
-            "description": "Blocks access to sensitive files (.env, secrets, credentials, keys)",
+            "description": "Blocks access to sensitive files, scans commits for leaked secrets, and provides circuit breaker utility",
             "category": "security"
         },
         {
@@ -45,8 +45,14 @@
         {
             "name": "claude-factory",
             "source": "./plugins/claude-factory",
-            "description": "Meta-plugin for creating Claude Code tools: skills, hooks, agents, commands, rules, CLAUDE.md maintenance, audit, and docs reference",
+            "description": "Meta-plugin for creating Claude Code tools: skills, hooks, agents, commands, rules, CLAUDE.md maintenance, audit, dream consolidation, and docs reference",
             "category": "development"
+        },
+        {
+            "name": "frustration-detector",
+            "source": "./plugins/frustration-detector",
+            "description": "Detects developer frustration and adapts Claude's response style (less talk, more action)",
+            "category": "productivity"
         }
     ]
 }
