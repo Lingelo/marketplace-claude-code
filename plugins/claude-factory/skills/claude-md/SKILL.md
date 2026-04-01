@@ -87,6 +87,8 @@ ls .claude/rules/ 2>/dev/null
 | No duplication | Doesn't repeat README/package.json content — imports instead |
 | Actionable | Every instruction is something Claude can act on |
 | HTML comments | Uses `<!-- -->` for human-only notes (stripped before injection) |
+| Model tags | Uses `<!-- @[OPUS-4.6] -->` to tag model-specific rules for easy cleanup when switching models. Run `grep -rn '@\[' CLAUDE.md .claude/rules/` to find them |
+| Numeric thresholds | Uses specific numbers ("max 50 lines per function") instead of vague instructions ("short functions"). Vague rules are not verifiable by scripts |
 
 ## Step 3A: Generate Report
 

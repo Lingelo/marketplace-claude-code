@@ -6,13 +6,14 @@ Marketplace de plugins pour Claude Code, fournissant des outils et workflows de 
 
 | Plugin | Description | Composants |
 |--------|-------------|------------|
-| [**security**](plugins/security/README.md) | Bloque l'accès aux fichiers sensibles (.env, secrets, clés) | Hook |
+| [**security**](plugins/security/README.md) | Bloque l'accès aux fichiers sensibles + scanne les commits pour détecter les secrets + circuit breaker | Hook, Utility |
 | [**notifications-system**](plugins/notifications-system/README.md) | Sons système et notifications OS | Hook |
 | [**git**](plugins/git/README.md) | Commits conventionnels + push securisé (bloque main/master) | Skills |
 | [**playwright**](plugins/playwright/README.md) | MCP Playwright + agents tests E2E (planner, generator, healer) | MCP, Agents |
 | [**statusline**](plugins/statusline/README.md) | Statusline avec suivi des coûts, git et support multi-plans | Command, Script |
 | [**experts**](plugins/experts/README.md) | Agent architecte pour analyse de code et évolutions | Agent |
-| [**claude-factory**](plugins/claude-factory/README.md) | Meta-plugin pour créer des outils Claude Code | Skills |
+| [**claude-factory**](plugins/claude-factory/README.md) | Meta-plugin pour créer des outils Claude Code + dream consolidation | Skills |
+| [**frustration-detector**](plugins/frustration-detector/README.md) | Détecte la frustration et adapte le style de Claude (moins de blabla, plus d'action) | Hook |
 
 ## Installation
 
@@ -46,6 +47,7 @@ Ou via le mode interactif :
 /plugin install statusline@angelo-plugins
 /plugin install experts@angelo-plugins
 /plugin install claude-factory@angelo-plugins
+/plugin install frustration-detector@angelo-plugins
 ```
 
 ## Configuration équipe
@@ -84,7 +86,10 @@ Ajouter dans le `.claude/settings.json` de votre projet pour auto-configurer tou
 ## Exemples d'utilisation
 
 ### Plugin Security
-Bloque automatiquement l'accès aux fichiers `.env`, `credentials.json`, `.pem`, etc.
+Deux protections automatiques via hooks `PreToolUse` :
+- **Blocage fichiers sensibles** — empêche l'accès aux `.env`, `credentials.json`, `.pem`, etc.
+- **Secret Scanner** — scanne les `git commit` pour détecter ~30 types de secrets (Anthropic, OpenAI, AWS, GitHub, GitLab, Slack, Stripe...) et bloque si des clés API ou tokens sont trouvés dans les fichiers stagés.
+
 Aucune commande nécessaire - fonctionne automatiquement via hook.
 
 > **Note sécurité** : Ce plugin utilise des **hooks `PreToolUse`** plutôt que les `deny` rules de `settings.json`. Les deny rules ont des [bugs connus](https://github.com/anthropics/claude-code/issues/6699) où elles sont parfois ignorées. Les hooks avec exit code 2 garantissent un blocage fiable.
@@ -120,6 +125,22 @@ Le plugin inclut un serveur MCP Playwright et 3 agents spécialisés pour les te
 - **Generator** — génère le code de test Playwright
 - **Healer** — débugge et corrige les tests en échec
 
+### Frustration Detector
+Détecte automatiquement la frustration dans vos prompts et adapte le style de Claude :
+- **Colère** (`putain`, `wtf`, `fuck`...) → mode action silencieuse, zéro blabla
+- **Impatience** (`finis`, `just do it`...) → code uniquement, pas d'explication
+- **Confusion** (`ça marche pas`, `I'm stuck`...) → diagnostic bref + fix immédiat
+- **Sarcasme** (`merci pour rien`, `I'll use Cursor`...) → action immédiate, pas d'excuses
+
+Fonctionne en FR et EN (~200 termes détectés). Aucune commande nécessaire.
+
+### Claude Factory — Dream Consolidation
+```bash
+/factory:dream              # Consolide les CLAUDE.md et rules/
+/factory:dream --dry-run    # Rapport sans modifications
+```
+Déduplication, détection de contradictions, nettoyage des références obsolètes.
+
 ## Structure
 
 ```
@@ -127,13 +148,14 @@ marketplace-claude-code/
 ├── .claude-plugin/
 │   └── marketplace.json      # Registre de la marketplace
 ├── plugins/
-│   ├── security/             # Protection fichiers sensibles
+│   ├── security/             # Protection fichiers sensibles + secret scanner + circuit breaker
 │   ├── notifications-system/ # Notifications sons système + OS
 │   ├── git/                  # Commits + push securise
 │   ├── playwright/           # MCP + Agents tests E2E
 │   ├── statusline/           # Statusline personnalisée
 │   ├── experts/              # Agent architecte
-│   └── claude-factory/       # Meta-plugin creation outils
+│   ├── claude-factory/       # Meta-plugin creation outils + dream consolidation
+│   └── frustration-detector/ # Détection frustration + adaptation style
 └── README.md
 ```
 

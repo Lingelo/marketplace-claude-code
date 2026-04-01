@@ -126,6 +126,39 @@ For scripts referenced by hooks:
 | Content quality | Specific, verifiable instructions | Info |
 | File location | In `.claude/rules/` directory | Info |
 
+### CLAUDE.md Extended Checks
+
+#### @[MODEL] Tags Detection
+
+Scan for HTML comments containing model-specific tags: `<!-- @[OPUS-4.6] -->`, `<!-- @[SONNET-4.6] -->`, `<!-- @[HAIKU-4.5] -->`, etc.
+
+| Check | Rule | Severity |
+|---|---|---|
+| Model tags found | List all `@[MODEL]` tags with file and line number | Info |
+| Outdated model tags | Tags referencing models older than current (e.g., `@[OPUS-4.5]` when using Opus 4.6) | Warning — "This rule may be obsolete, verify if still needed" |
+| Untagged model-specific rules | Rules mentioning model quirks (e.g., "em-dash", "tirets cadratins") without a `@[MODEL]` tag | Info — "Consider adding a @[MODEL] tag for maintenance" |
+| Tagged vs untagged ratio | Count tagged rules vs total rules | Info — prompt engineering technical debt indicator |
+
+Search pattern: `grep -rn '@\[.*\]' *.md .claude/rules/ CLAUDE.md` across CLAUDE.md, SKILL.md, agents, rules.
+
+#### Vague Instructions Detection
+
+Scan CLAUDE.md and rules for vague, unverifiable instructions and suggest numeric thresholds:
+
+| Vague Pattern | Suggested Replacement | Severity |
+|---|---|---|
+| "sois concis" / "be concise" / "keep it short" | "Max 3 phrases par explication, code uniquement quand possible" | Warning |
+| "fonctions courtes" / "short functions" / "small functions" | "Max 50 lignes par fonction" | Warning |
+| "code propre" / "clean code" / "good code" / "quality code" | "0 warning ESLint/linter, 0 TODO non-assigné" | Warning |
+| "bien testé" / "well tested" / "good tests" | "Couverture tests ≥ 80%" | Warning |
+| "bonne couverture" / "good coverage" | "Couverture tests ≥ 80%, ≥ 1 test par fonction publique" | Warning |
+| "performant" / "fast" / "efficient" / "rapide" | "Temps de réponse < 200ms pour les endpoints API" | Warning |
+| "lisible" / "readable" | "Max 100 caractères par ligne, noms descriptifs ≥ 3 caractères" | Warning |
+| "modulaire" / "modular" | "Max 1 responsabilité par module, max 300 lignes par fichier" | Warning |
+| "sécurisé" / "secure" | "Valider tous les inputs utilisateur, échapper les outputs HTML" | Warning |
+
+Report these as: `[W] CLAUDE.md:42 — Vague instruction "sois concis" — consider: "Max 3 phrases par explication"`
+
 ### Plugin Validation (recursive)
 
 | Check | Rule | Severity |

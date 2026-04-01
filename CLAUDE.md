@@ -29,18 +29,19 @@ plugins/<name>/
 | **Skill** | `SKILL.md` with YAML frontmatter | `/command` (e.g. `/commit`, `/push`) |
 | **Command** | Markdown with YAML frontmatter | `/command` (e.g. `/epct`) |
 | **Agent** | Markdown system prompt | Automatic matching or explicit invocation |
-| **Hook** | `hooks.json` → scripts | Tool events (PreToolUse, Stop, Notification) |
+| **Hook** | `hooks.json` → scripts | Tool events (PreToolUse, Stop, Notification, UserPromptSubmit) |
 | **MCP** | `.mcp.json` | External service integration |
 
-## 7 Plugins
+## 8 Plugins
 
-- **security** — Hook blocking sensitive files (.env, keys, credentials). Exit code 2 = block.
+- **security** — Hook blocking sensitive files (.env, keys, credentials) + secret scanner (~30 secret types) + circuit breaker utility. Exit code 2 = block.
 - **notifications-system** — System sound & OS notifications on Stop and permission_prompt events.
 - **git** — `/commit` (conventional commits + Jira from branch) + `/push` (blocks main/master).
 - **playwright** — MCP server + 3 agents (planner, generator, healer) for E2E tests.
 - **statusline** — `/statusline-setup` 11-phase wizard for cost/token tracking statusline.
 - **experts** — Architect agent (Opus + ultrathink) for deep code analysis.
-- **claude-factory** — Meta-plugin for creating Claude Code tools (skills, hooks, agents, commands, rules), CLAUDE.md maintenance, audit, and docs reference.
+- **claude-factory** — Meta-plugin for creating Claude Code tools (skills, hooks, agents, commands, rules), CLAUDE.md maintenance, audit, dream consolidation, and docs reference.
+- **frustration-detector** — UserPromptSubmit hook detecting developer frustration (FR/EN, ~200 terms) and injecting context for adapted responses.
 
 ## Adding a New Plugin
 
